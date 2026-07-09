@@ -339,84 +339,107 @@ void sortData() {
 
 /* ---------------------- RATA-RATA HARGA ---------------------- */
 void rataRataHarga() {
-    /* ============================================================
-       TODO Person D — isi fungsi ini!
+    if (head == NULL) {
+        printf("\nData masih kosong!\n");
+        tekanEnter();
+        return;
+    }
 
-       Yang perlu dilakukan:
-       1. Kalau head == NULL, kasih pesan "Data masih kosong!", return
-       2. Loop semua node dari head, sambil hitung:
-          - total harga semua obat (buat rata-rata nanti)
-          - total nilai stok = harga * stok, dijumlah semua node
-          - jumlah data (counter, ditambah 1 tiap loop)
-       3. Rata-rata harga = total harga / jumlah data (ingat cast ke
-          float biar hasilnya nggak dibulatkan ke bawah)
-       4. Cetak hasilnya: jumlah jenis obat, rata-rata harga, dan
-          total nilai stok
-       5. Panggil tekanEnter() di akhir
-       ============================================================ */
+    Obat *temp = head;
+    long totalHarga = 0;
+    long totalNilaiStok = 0;
+    int jumlahData = 0;
+    float rataRata;
 
-    printf("\n[rataRataHarga belum diimplementasikan]\n");
+    while (temp != NULL) {
+        totalHarga += temp->harga;
+        totalNilaiStok += temp->harga * temp->stok;
+        jumlahData++;
+
+        temp = temp->next;
+    }
+
+    rataRata = (float) totalHarga / jumlahData;
+
+    printf("\n========================================\n");
+    printf("         RATA-RATA HARGA OBAT\n");
+    printf("========================================\n");
+    printf("Jumlah Jenis Obat : %d\n", jumlahData);
+    printf("Rata-rata Harga   : Rp %.2f\n", rataRata);
+    printf("Total Nilai Stok  : Rp %ld\n", totalNilaiStok);
+
     tekanEnter();
 }
 
 /* ---------------------- FILE HANDLING ---------------------- */
 void simpanKeFile() {
-    /* ============================================================
-       TODO Person D — isi fungsi ini!
+    FILE *file = fopen(FILENAME, "w");
 
-       Yang perlu dilakukan:
-       1. Buka file "data_apotek.txt" (pakai konstanta FILENAME) mode
-          "w" (write, akan menimpa isi file lama)
-       2. Kalau fopen() gagal (return NULL), kasih pesan error, return
-       3. Loop semua node dari head, tulis tiap data ke file dalam
-          satu baris, dipisah pakai karakter '|' sebagai delimiter,
-          contoh format: kode|nama|kategori|stok|harga|expired
-          (pakai fprintf ke file, bukan printf ke layar)
-       4. Tutup file pakai fclose() di akhir
+    if (file == NULL) {
+        printf("Gagal membuka file!\n");
+        return;
+    }
 
-       Catatan: fungsi ini dipanggil otomatis setiap kali ada
-       perubahan data (tambah/update/hapus/sort), jadi harus benar-
-       benar menulis ULANG seluruh isi list, bukan cuma nambahin baris.
-       ============================================================ */
+    Obat *temp = head;
 
-    printf("[simpanKeFile belum diimplementasikan]\n");
+    while (temp != NULL) {
+        fprintf(file, "%s|%s|%s|%d|%ld|%s\n",
+                temp->kode,
+                temp->nama,
+                temp->kategori,
+                temp->stok,
+                temp->harga,
+                temp->expired);
+
+        temp = temp->next;
+    }
+
+    fclose(file);
 }
+
 
 void muatDariFile() {
-    /* ============================================================
-       TODO Person D — isi fungsi ini!
+    FILE *file = fopen(FILENAME, "r");
 
-       Yang perlu dilakukan:
-       1. Buka file "data_apotek.txt" mode "r" (read)
-       2. Kalau fopen() gagal (NULL) -> berarti file belum ada
-          (pertama kali program dijalankan), cukup return saja,
-          jangan dianggap error
-       3. Baca file baris per baris pakai fgets()
-       4. Tiap baris, pecah pakai strtok() dengan delimiter "|" untuk
-          dapatkan tiap field (kode, nama, kategori, stok, harga,
-          expired) — ingat stok pakai atoi() dan harga pakai atol()
-          karena hasil strtok() itu string, bukan angka
-       5. Alokasikan node baru (malloc), isi field-nya dari hasil
-          parsing, lalu sambungkan ke akhir linked list (mirip logic
-          nyisip di akhir pada tambahData())
-       6. Tutup file pakai fclose() setelah semua baris dibaca
-
-       Fungsi ini dipanggil SEKALI di awal main(), sebelum menu
-       muncul, supaya data dari sesi sebelumnya otomatis termuat lagi.
-       ============================================================ */
-
-    printf("[muatDariFile belum diimplementasikan]\n");
-}
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON D <<<<<<<<<<<<<<<<<< */
-
-
-/* ---------------------- BEBASKAN MEMORI (fungsi bersama) ---------------------- */
-void bebaskanMemori() {
-    Obat *temp;
-    while (head != NULL) {
-        temp = head;
-        head = head->next;
-        free(temp);
+    if (file == NULL) {
+        return;
     }
+
+    char baris[200];
+
+    while (fgets(baris, sizeof(baris), file) != NULL) {
+
+        Obat *temp = (Obat *)malloc(sizeof(Obat));
+        temp->next = NULL;
+
+        char *token;
+
+        token = strtok(baris, "|");
+        strcpy(temp->kode, token);
+
+        token = strtok(NULL, "|");
+        strcpy(temp->nama, token);
+
+        token = strtok(NULL, "|");
+        strcpy(temp->kategori, token);
+
+        token = strtok(NULL, "|");
+        temp->stok = atoi(token);
+
+        token = strtok(NULL, "|");
+        temp->harga = atol(token);
+
+        token = strtok(NULL, "\n");
+        strcpy(temp->expired, token);
+
+        if (head == NULL) {
+            head = temp;
+            tail = temp;
+        } else {
+            tail->next = temp;
+            tail = temp;
+        }
+    }
+
+    fclose(file);
 }
