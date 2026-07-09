@@ -80,12 +80,7 @@ int main() {
 
 /* ---------------------- UTILITAS ---------------------- */
 void bersihkanLayar() {
-    /* Dikosongkan agar riwayat tetap terlihat saat dites di terminal.
-       Jika ingin membersihkan layar otomatis, aktifkan salah satu baris di bawah
-       sesuai sistem operasi:
-       system("cls");   // Windows
-       system("clear"); // Linux/Mac
-    */
+   system("cls");
 }
 
 void tekanEnter() {
