@@ -22,6 +22,14 @@
    diubah sendiri, biar kerjaan semua orang tetap nyambung waktu
    digabung.
 
+   PENTING soal linked list: selain "head", ada juga pointer "tail"
+   yang selalu nunjuk ke node PALING BELAKANG. Ini dipakai supaya
+   insert di akhir list gak perlu looping dari head lagi (tinggal
+   tail->next = node_baru). Kalau bagian kalian mengubah struktur
+   list (nambah/hapus node), WAJIB jaga "tail" supaya tetap nunjuk ke
+   node terakhir yang benar setelah operasi selesai — detailnya ada
+   di TODO masing-masing fungsi.
+
    Cara kerja:
    1. Semua orang copy file ini duluan sebagai starting point.
    2. Kerjakan fungsi bagian masing-masing di FILE INI (bukan file
@@ -66,6 +74,7 @@ typedef struct Obat {
 } Obat;
 
 Obat *head = NULL;
+Obat *tail = NULL;   /* pointer ke node terakhir, biar insert di belakang gak perlu looping cari node terakhir */
 
 /* ---------------------- PROTOTYPE FUNGSI ---------------------- */
 void tambahData();
@@ -178,9 +187,21 @@ void tambahData() {
           di fungsi lain kalau lupa formatnya)
        4. Cek dulu kode-nya belum dipakai (pakai cariNodeByKode(),
           kalau hasilnya bukan NULL berarti kode sudah ada)
-       5. Alokasikan node baru pakai malloc(sizeof(Obat))
+       5. Alokasikan node baru pakai malloc(sizeof(Obat)), jangan lupa
+          set temp->next = NULL dulu
        6. Sambungkan node baru ke linked list sesuai posisi yang
-          dipilih di langkah 2 (atur pointer ->next-nya)
+          dipilih di langkah 2, DAN jaga supaya "tail" selalu nunjuk
+          ke node terakhir yang benar setelah penyisipan:
+          - Kalau list masih kosong (head == NULL): head = temp;
+            tail = temp;
+          - Kalau sisip di AWAL: temp->next = head; head = temp;
+            (tail tidak berubah)
+          - Kalau sisip di TENGAH (setelah node hasil cariNodeByKode):
+            temp->next = nodeTarget->next; nodeTarget->next = temp;
+            (kalau ternyata nodeTarget == tail, berarti temp jadi
+            node terakhir baru, jadi update tail = temp)
+          - Kalau sisip di AKHIR: tail->next = temp; tail = temp;
+            (langsung pakai tail, TIDAK perlu looping dari head lagi)
        7. Panggil simpanKeFile() supaya data baru langsung tersimpan
        8. Panggil tekanEnter() di akhir biar user bisa baca pesannya
        ============================================================ */
@@ -251,9 +272,15 @@ void hapusData() {
           karena buat hapus node di singly linked list, node sebelumnya
           harus disambungkan ke node SETELAH yang dihapus
        4. Kalau tidak ketemu, kasih pesan error, return
-       5. Kalau node yang dihapus adalah head, geser head ke
-          node->next. Kalau bukan head, sambungkan prev->next ke
-          node->next
+       5. Update pointer sesuai posisi node yang dihapus, JAGA supaya
+          "tail" tetap benar:
+          - Kalau head == tail (cuma ada 1 data doang) dan itu yang
+            dihapus: head = NULL; tail = NULL;
+          - Kalau yang dihapus adalah head (tapi bukan satu-satunya):
+            head = head->next;
+          - Kalau yang dihapus adalah tail (tapi bukan satu-satunya):
+            prev->next = NULL; tail = prev;
+          - Selain itu (node di tengah): prev->next = node->next;
        6. free() node yang sudah dihapus
        7. Panggil simpanKeFile() supaya perubahan tersimpan
        8. Panggil tekanEnter() di akhir
@@ -397,8 +424,10 @@ void muatDariFile() {
           expired) — ingat stok pakai atoi() dan harga pakai atol()
           karena hasil strtok() itu string, bukan angka
        5. Alokasikan node baru (malloc), isi field-nya dari hasil
-          parsing, lalu sambungkan ke akhir linked list (mirip logic
-          nyisip di akhir pada tambahData())
+          parsing, set next-nya NULL, lalu sambungkan ke akhir linked
+          list pakai pola head/tail (sama seperti tambahBelakang()):
+          kalau head == NULL -> head = tail = temp; kalau tidak ->
+          tail->next = temp; tail = temp;
        6. Tutup file pakai fclose() setelah semua baris dibaca
 
        Fungsi ini dipanggil SEKALI di awal main(), sebelum menu
@@ -419,4 +448,5 @@ void bebaskanMemori() {
         head = head->next;
         free(temp);
     }
+    tail = NULL;
 }
