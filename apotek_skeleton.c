@@ -1,52 +1,3 @@
-/* ================================================================
-   PROGRAM DATA APOTEK
-   Fitur:
-   - Linked List (Singly Linked List)
-   - CRUD (Create, Read, Update, Delete)
-   - Sorting (berdasarkan Nama / Harga / Stok, ascending)
-   - Searching (berdasarkan Kode / Nama / Kategori, case-sensitive)
-   - File Handling (simpan & muat otomatis dari data_apotek.txt)
-
-   ================================================================
-   PANDUAN PEMBAGIAN TUGAS — BACA DULU SEBELUM NGODING!
-   ================================================================
-   Ini adalah file KERANGKA (skeleton). Struct "Obat", prototype
-   fungsi, main(), dan fungsi-fungsi bersama (cariNodeByKode,
-   bersihkanLayar, tekanEnter, bebaskanMemori) SUDAH JADI dan bisa
-   langsung di-compile — TAPI fungsi di dalam kotak banner (Person
-   A/B/C/D) masih KOSONG / belum diimplementasikan (isinya cuma
-   printf "belum diimplementasikan"). Tugas kalian adalah mengisi
-   fungsi di kotak banner masing-masing sampai lengkap.
-
-   Struct "Obat" di bawah adalah PATOKAN BERSAMA — field-nya JANGAN
-   diubah sendiri, biar kerjaan semua orang tetap nyambung waktu
-   digabung.
-
-   Cara kerja:
-   1. Semua orang copy file ini duluan sebagai starting point.
-   2. Kerjakan fungsi bagian masing-masing di FILE INI (bukan file
-      terpisah), tapi HANYA di dalam kotak banner yang sesuai nama
-      kalian di bawah. Jangan sentuh kotak banner milik orang lain.
-      Di dalam tiap kotak sudah ada komentar TODO yang jelasin
-      langkah-langkah apa yang perlu dikerjakan.
-   3. Kalau sudah selesai, kirim/tempel ULANG isi kotak banner kalian
-      saja ke satu orang "integrator" yang akan menempelkannya ke
-      file master.
-   4. Integrator tinggal cari banner yang sesuai nama, lalu ganti isi
-      fungsi di dalamnya dengan versi final dari tiap orang, lalu
-      compile ulang seluruh file.
-
-   Kotak banner yang ada:
-   - PERSON A -> tambahData(), tampilkanData()
-   - PERSON B -> updateData(), hapusData()
-   - PERSON C -> searchData(), sortData()
-   - PERSON D -> simpanKeFile(), muatDariFile(), rataRataHarga()
-
-   (fungsi cariNodeByKode, bersihkanLayar, tekanEnter, bebaskanMemori,
-   dan main() adalah fungsi "penghubung" bersama — sudah jadi & jangan
-   diubah kecuali disepakati bareng-bareng)
-   ================================================================ */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -543,9 +494,6 @@ void sortData() {
     simpanKeFile();
     tampilkanData();
 }
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON C <<<<<<<<<<<<<<<<<< */
-
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON D  <<<<<<<<<<<<<<<<<<
