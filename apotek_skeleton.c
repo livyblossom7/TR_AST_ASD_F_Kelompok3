@@ -1,52 +1,3 @@
-/* ================================================================
-   PROGRAM DATA APOTEK
-   Fitur:
-   - Linked List (Singly Linked List)
-   - CRUD (Create, Read, Update, Delete)
-   - Sorting (berdasarkan Nama / Harga / Stok, ascending)
-   - Searching (berdasarkan Kode / Nama / Kategori, case-sensitive)
-   - File Handling (simpan & muat otomatis dari data_apotek.txt)
-
-   ================================================================
-   PANDUAN PEMBAGIAN TUGAS — BACA DULU SEBELUM NGODING!
-   ================================================================
-   Ini adalah file KERANGKA (skeleton). Struct "Obat", prototype
-   fungsi, main(), dan fungsi-fungsi bersama (cariNodeByKode,
-   bersihkanLayar, tekanEnter, bebaskanMemori) SUDAH JADI dan bisa
-   langsung di-compile — TAPI fungsi di dalam kotak banner (Person
-   A/B/C/D) masih KOSONG / belum diimplementasikan (isinya cuma
-   printf "belum diimplementasikan"). Tugas kalian adalah mengisi
-   fungsi di kotak banner masing-masing sampai lengkap.
-
-   Struct "Obat" di bawah adalah PATOKAN BERSAMA — field-nya JANGAN
-   diubah sendiri, biar kerjaan semua orang tetap nyambung waktu
-   digabung.
-
-   Cara kerja:
-   1. Semua orang copy file ini duluan sebagai starting point.
-   2. Kerjakan fungsi bagian masing-masing di FILE INI (bukan file
-      terpisah), tapi HANYA di dalam kotak banner yang sesuai nama
-      kalian di bawah. Jangan sentuh kotak banner milik orang lain.
-      Di dalam tiap kotak sudah ada komentar TODO yang jelasin
-      langkah-langkah apa yang perlu dikerjakan.
-   3. Kalau sudah selesai, kirim/tempel ULANG isi kotak banner kalian
-      saja ke satu orang "integrator" yang akan menempelkannya ke
-      file master.
-   4. Integrator tinggal cari banner yang sesuai nama, lalu ganti isi
-      fungsi di dalamnya dengan versi final dari tiap orang, lalu
-      compile ulang seluruh file.
-
-   Kotak banner yang ada:
-   - PERSON A -> tambahData(), tampilkanData()
-   - PERSON B -> updateData(), hapusData()
-   - PERSON C -> searchData(), sortData()
-   - PERSON D -> simpanKeFile(), muatDariFile(), rataRataHarga()
-
-   (fungsi cariNodeByKode, bersihkanLayar, tekanEnter, bebaskanMemori,
-   dan main() adalah fungsi "penghubung" bersama — sudah jadi & jangan
-   diubah kecuali disepakati bareng-bareng)
-   ================================================================ */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -160,56 +111,126 @@ Obat* cariNodeByKode(char kode[]) {
    dan tampilkanData()
    Paste/tulis kode kalian DI DALAM kotak ini saja.
    ================================================================ */
-
-/* ---------------------- CREATE ---------------------- */
 void tambahData() {
-    /* ============================================================
-       TODO Person A — isi fungsi ini!
+    char kode[10];
+    int posisi;
+    char kodeSetelah[10];
+    Obat *nodeSetelah = NULL;
 
-       Yang perlu dilakukan:
-       1. Tampilkan judul "=== TAMBAH DATA OBAT ==="
-       2. Tanya dulu user mau nyisipin data di posisi:
-          1. Awal
-          2. Tengah  -> kalau ini dipilih, tanya lagi "sisip setelah
-             kode obat apa?" lalu cari node-nya pakai cariNodeByKode()
-          3. Akhir
-       3. Baru setelah posisi ditentukan, minta input: kode, nama,
-          kategori, stok, harga, expired (pakai scanf, lihat contoh
-          di fungsi lain kalau lupa formatnya)
-       4. Cek dulu kode-nya belum dipakai (pakai cariNodeByKode(),
-          kalau hasilnya bukan NULL berarti kode sudah ada)
-       5. Alokasikan node baru pakai malloc(sizeof(Obat))
-       6. Sambungkan node baru ke linked list sesuai posisi yang
-          dipilih di langkah 2 (atur pointer ->next-nya)
-       7. Panggil simpanKeFile() supaya data baru langsung tersimpan
-       8. Panggil tekanEnter() di akhir biar user bisa baca pesannya
-       ============================================================ */
+    printf("\n=== TAMBAH DATA OBAT ===\n");
+    printf("Mau menambahkan data di posisi mana?\n");
+    printf("1. Awal\n");
+    printf("2. Tengah\n");
+    printf("3. Akhir\n");
+    printf("Pilihan: ");
+    scanf("%d", &posisi);
+    getchar();
 
-    printf("\n[tambahData belum diimplementasikan]\n");
+    if (posisi != 1 && posisi != 2 && posisi != 3) {
+        printf("\nPilihan posisi tidak valid!\n");
+        tekanEnter();
+        return;
+    }
+
+    if (posisi == 2) {
+        if (head == NULL) {
+            printf("\nData masih kosong, tidak bisa menyisipkan di tengah. Data akan ditambahkan sebagai data pertama.\n");
+            posisi = 1;
+        } else {
+            printf("Sisipkan setelah kode obat apa? ");
+            scanf("%9s", kodeSetelah);
+            getchar();
+
+            nodeSetelah = cariNodeByKode(kodeSetelah);
+            if (nodeSetelah == NULL) {
+                printf("\nKode obat '%s' tidak ditemukan! Data tidak ditambahkan.\n", kodeSetelah);
+                tekanEnter();
+                return;
+            }
+        }
+    }
+
+    printf("Kode Obat  : ");
+    scanf("%9s", kode);
+    getchar();
+
+    if (cariNodeByKode(kode) != NULL) {
+        printf("\nKode obat '%s' sudah ada! Data tidak ditambahkan.\n", kode);
+        tekanEnter();
+        return;
+    }
+
+    Obat *baru = (Obat*) malloc(sizeof(Obat));
+    if (baru == NULL) {
+        printf("Alokasi memori gagal!\n");
+        return;
+    }
+
+    strcpy(baru->kode, kode);
+
+    printf("Nama Obat  : ");
+    scanf(" %49[^\n]", baru->nama);
+
+    printf("Kategori   : ");
+    scanf(" %29[^\n]", baru->kategori);
+
+    printf("Stok       : ");
+    scanf("%d", &baru->stok);
+
+    printf("Harga      : ");
+    scanf("%ld", &baru->harga);
+
+    printf("Expired (dd-mm-yyyy): ");
+    scanf(" %14s", baru->expired);
+
+    baru->next = NULL;
+
+    if (posisi == 1) {
+        baru->next = head;
+        head = baru;
+    } else if (posisi == 2) {
+        baru->next = nodeSetelah->next;
+        nodeSetelah->next = baru;
+    } else {
+        if (head == NULL) {
+            head = baru;
+        } else {
+            Obat *temp = head;
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = baru;
+        }
+    }
+
+    simpanKeFile();
+    printf("\nData obat '%s' berhasil ditambahkan!\n", baru->nama);
+
     tekanEnter();
 }
 
-/* ---------------------- READ ---------------------- */
 void tampilkanData() {
-    /* ============================================================
-       TODO Person A — isi fungsi ini!
+    printf("\n=== DATA OBAT APOTEK ===\n");
+    if (head == NULL) {
+        printf("Belum ada data obat.\n");
+        tekanEnter();
+        return;
+    }
 
-       Yang perlu dilakukan:
-       1. Kalau head == NULL, tampilkan "Belum ada data obat." lalu
-          return (jangan lanjut ke bawah)
-       2. Cetak header tabel (Kode, Nama, Kategori, Stok, Harga, Expired)
-       3. Loop dari head sampai NULL (pakai variabel pointer sementara,
-          misal Obat *temp = head; lalu temp = temp->next di tiap
-          perulangan), cetak semua data tiap node
-       4. Panggil tekanEnter() di akhir
-       ============================================================ */
+    printf("%-8s %-20s %-15s %-6s %-10s %-12s\n",
+           "Kode", "Nama", "Kategori", "Stok", "Harga", "Expired");
+    printf("--------------------------------------------------------------------\n");
 
-    printf("\n[tampilkanData belum diimplementasikan]\n");
+    Obat *temp = head;
+    while (temp != NULL) {
+        printf("%-8s %-20s %-15s %-6d %-10ld %-12s\n",
+               temp->kode, temp->nama, temp->kategori,
+               temp->stok, temp->harga, temp->expired);
+        temp = temp->next;
+    }
+
     tekanEnter();
 }
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON A <<<<<<<<<<<<<<<<<< */
-
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON B  <<<<<<<<<<<<<<<<<<
@@ -219,51 +240,96 @@ void tampilkanData() {
 
 /* ---------------------- UPDATE ---------------------- */
 void updateData() {
-    /* ============================================================
-       TODO Person B — isi fungsi ini!
-
-       Yang perlu dilakukan:
-       1. Minta input kode obat yang mau diupdate
-       2. Cari node-nya pakai cariNodeByKode(kode)
-       3. Kalau NULL (tidak ketemu), kasih pesan error, tekanEnter(),
-          lalu return
-       4. Kalau ketemu, tampilkan data lama-nya sebagai referensi
-       5. Minta input data baru (nama, kategori, stok, harga, expired)
-          dan langsung timpa/overwrite field di node yang ditemukan
-       6. Panggil simpanKeFile() supaya perubahan tersimpan ke file
-       7. Panggil tekanEnter() di akhir
-       ============================================================ */
-
-    printf("\n[updateData belum diimplementasikan]\n");
+    char kode[10];
+    Obat *node;
+ 
+    printf("\n=== UPDATE DATA OBAT ===\n");
+ 
+    if (head == NULL) {
+        printf("Data masih kosong!\n");
+        tekanEnter();
+        return;
+    }
+ 
+    printf("Masukkan kode obat yang mau diupdate: ");
+    scanf("%s", kode);
+ 
+    node = cariNodeByKode(kode);
+    if (node == NULL) {
+        printf("Data dengan kode %s tidak ditemukan!\n", kode);
+        tekanEnter();
+        return;
+    }
+ 
+    printf("\nData lama:\n");
+    printf("Kode     : %s\n", node->kode);
+    printf("Nama     : %s\n", node->nama);
+    printf("Kategori : %s\n", node->kategori);
+    printf("Stok     : %d\n", node->stok);
+    printf("Harga    : %ld\n", node->harga);
+    printf("Expired  : %s\n", node->expired);
+ 
+    printf("\nMasukkan data baru (kode tidak bisa diubah):\n");
+    printf("Nama baru               : ");
+    scanf("%s", node->nama);
+    printf("Kategori baru           : ");
+    scanf("%s", node->kategori);
+    printf("Stok baru               : ");
+    scanf("%d", &node->stok);
+    printf("Harga baru              : ");
+    scanf("%ld", &node->harga);
+    printf("Expired baru (dd-mm-yyyy): ");
+    scanf("%s", node->expired);
+ 
+    simpanKeFile();
+    printf("\nData berhasil diupdate!\n");
     tekanEnter();
 }
-
+ 
 /* ---------------------- DELETE ---------------------- */
 void hapusData() {
-    /* ============================================================
-       TODO Person B — isi fungsi ini!
+    char kode[10];
+    Obat *curr, *prev;
 
-       Yang perlu dilakukan:
-       1. Minta input kode obat yang mau dihapus
-       2. Kalau head == NULL, kasih pesan "Data masih kosong!", return
-       3. Cari node yang kode-nya cocok, sambil simpan juga pointer
-          ke node SEBELUMNYA (butuh 2 variabel pointer: current & prev)
-          karena buat hapus node di singly linked list, node sebelumnya
-          harus disambungkan ke node SETELAH yang dihapus
-       4. Kalau tidak ketemu, kasih pesan error, return
-       5. Kalau node yang dihapus adalah head, geser head ke
-          node->next. Kalau bukan head, sambungkan prev->next ke
-          node->next
-       6. free() node yang sudah dihapus
-       7. Panggil simpanKeFile() supaya perubahan tersimpan
-       8. Panggil tekanEnter() di akhir
-       ============================================================ */
+    printf("\n=== HAPUS DATA OBAT ===\n");
 
-    printf("\n[hapusData belum diimplementasikan]\n");
+    if (head == NULL) {
+        printf("Data masih kosong!\n");
+        tekanEnter();
+        return;
+    }
+
+    printf("Masukkan kode obat yang mau dihapus: ");
+    scanf("%s", kode);
+
+    /* cari node yang kodenya cocok, sambil simpan pointer node sebelumnya */
+    curr = head;
+    prev = NULL;
+    while (curr != NULL && strcmp(curr->kode, kode) != 0) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    if (curr == NULL) {
+        printf("Data dengan kode %s tidak ditemukan!\n", kode);
+        tekanEnter();
+        return;
+    }
+
+    if (curr == head) {
+        /* yang dihapus adalah head (termasuk kalau cuma 1 data) */
+        head = head->next;
+    } else {
+        /* yang dihapus di tengah atau di akhir */
+        prev->next = curr->next;
+    }
+
+    free(curr);
+
+    simpanKeFile();
+    printf("\nData dengan kode %s berhasil dihapus!\n", kode);
     tekanEnter();
 }
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON B <<<<<<<<<<<<<<<<<< */
 
 
 /* ================================================================
@@ -274,62 +340,152 @@ void hapusData() {
    ================================================================ */
 
 /* ---------------------- SEARCH ---------------------- */
+
 void searchData() {
-    /* ============================================================
-       TODO Person C — isi fungsi ini!
+    if (head == NULL) {
+        printf("\nData masih kosong!\n");
+        tekanEnter();
+        return;
+    }
 
-       Yang perlu dilakukan:
-       1. Tampilkan menu pilihan: 1. Cari berdasarkan Kode
-                                    2. Cari berdasarkan Nama
-                                    3. Cari berdasarkan Kategori
-       2. Kalau head == NULL, kasih pesan "Data masih kosong!", return
-       3. Untuk pilihan Kode -> pakai cariNodeByKode(kode)
-       4. Untuk pilihan Nama / Kategori -> loop semua node, cek
-          pakai strstr(temp->nama, kata) atau strstr(temp->kategori, kategori)
-          supaya bisa cari sebagian kata (substring), bukan cuma exact match
-       5. PENTING: pencarian ini case-sensitive (jangan pakai tolower()).
-          Sebelum user input nama/kategori, tampilkan dulu keterangan
-          singkat bahwa "Adi" dan "adi" akan dianggap berbeda karena
-          nilai ASCII huruf besar & kecil berbeda
-       6. Kalau data ditemukan, tampilkan detailnya. Kalau tidak ada
-          satupun yang cocok, tampilkan "Data tidak ditemukan!"
-       7. Panggil tekanEnter() di akhir
-       ============================================================ */
+    int pilihan;
+    char keyword[50];
+    int ketemu = 0;
 
-    printf("\n[searchData belum diimplementasikan]\n");
+    printf("\n=== SEARCH DATA OBAT ===\n");
+    printf("1. Cari berdasarkan Kode\n");
+    printf("2. Cari berdasarkan Nama\n");
+    printf("3. Cari berdasarkan Kategori\n");
+    printf("Pilihan: ");
+    scanf("%d", &pilihan);
+    getchar();
+
+    if (pilihan < 1 || pilihan > 3) {
+        printf("\nPilihan tidak valid!\n");
+        tekanEnter();
+        return;
+    }
+
+    printf("\n(Catatan: Pencarian ini case-sensitive ya. 'Obat' beda dengan 'obat')\n");
+    printf("Masukkan kata kunci: ");
+    scanf(" %49[^\n]", keyword);
+    getchar();
+
+    printf("\n=== HASIL PENCARIAN ===\n");
+
+    if (pilihan == 1) {
+        Obat *hasil = cariNodeByKode(keyword);
+        if (hasil != NULL) {
+            printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n", 
+                   hasil->kode, hasil->nama, hasil->kategori, hasil->stok, hasil->harga, hasil->expired);
+            ketemu = 1;
+        }
+    } else {
+        Obat *temp = head;
+        while (temp != NULL) {
+            if ((pilihan == 2 && strstr(temp->nama, keyword) != NULL) ||
+                (pilihan == 3 && strstr(temp->kategori, keyword) != NULL)) {
+                
+                printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n", 
+                       temp->kode, temp->nama, temp->kategori, temp->stok, temp->harga, temp->expired);
+                ketemu = 1;
+            }
+            temp = temp->next;
+        }
+    }
+
+    if (ketemu == 0) {
+        printf("Data tidak ditemukan!\n");
+    }
+    
+    printf("\n");
     tekanEnter();
 }
 
 /* ---------------------- SORT ---------------------- */
 void sortData() {
-    /* ============================================================
-       TODO Person C — isi fungsi ini!
+    if (head == NULL || head->next == NULL) {
+        printf("\nData tidak cukup untuk diurutkan (minimal butuh 2 data).\n");
+        tekanEnter();
+        return;
+    }
 
-       Yang perlu dilakukan:
-       1. Kalau data kurang dari 2 (head == NULL || head->next == NULL),
-          kasih pesan "Data tidak cukup untuk diurutkan", return
-       2. Tampilkan menu pilihan urutkan berdasarkan: 1. Nama
-                                                        2. Harga
-                                                        3. Stok
-          (HANYA ascending / kecil ke besar, tidak perlu tanya
-          ascending/descending lagi)
-       3. Implementasikan bubble sort di linked list. Karena ini
-          singly linked list, cara paling gampang: TUKAR ISI DATA
-          antar 2 node yang berdekatan (bukan tukar pointer/alamat),
-          pakai variabel temp buat nampung sementara pas nukar
-       4. Bandingkan pakai strcmp() untuk nama (kalau hasilnya > 0
-          berarti perlu ditukar), atau operator > biasa untuk
-          harga/stok (angka)
-       5. Setelah selesai sorting, panggil simpanKeFile() dan
-          tampilkanData() supaya user langsung lihat hasilnya
-       ============================================================ */
+    int pilihan;
+    printf("\n=== SORT DATA OBAT ===\n");
+    printf("Urutkan (Ascending) berdasarkan:\n");
+    printf("1. Nama\n");
+    printf("2. Harga\n");
+    printf("3. Stok\n");
+    printf("Pilihan: ");
+    scanf("%d", &pilihan);
+    getchar();
 
-    printf("\n[sortData belum diimplementasikan]\n");
-    tekanEnter();
+    if (pilihan < 1 || pilihan > 3) {
+        printf("\nPilihan tidak valid!\n");
+        tekanEnter();
+        return;
+    }
+
+    int swapped;
+    Obat *ptr1;
+    Obat *lptr = NULL;
+
+    do {
+        swapped = 0;
+        ptr1 = head;
+
+        while (ptr1->next != lptr) {
+            int tukar = 0;
+
+            if (pilihan == 1) {
+                if (strcmp(ptr1->nama, ptr1->next->nama) > 0) tukar = 1;
+            } else if (pilihan == 2) {
+                if (ptr1->harga > ptr1->next->harga) tukar = 1;
+            } else if (pilihan == 3) {
+                if (ptr1->stok > ptr1->next->stok) tukar = 1;
+            }
+
+            if (tukar == 1) {
+                // Tukar isi datanya, jangan pointernya (sesuai instruksi)
+                char tempKode[10], tempNama[50], tempKategori[30], tempExpired[15];
+                int tempStok;
+                long tempHarga;
+
+                // Copy dari ptr1 ke temp
+                strcpy(tempKode, ptr1->kode);
+                strcpy(tempNama, ptr1->nama);
+                strcpy(tempKategori, ptr1->kategori);
+                tempStok = ptr1->stok;
+                tempHarga = ptr1->harga;
+                strcpy(tempExpired, ptr1->expired);
+
+                // Copy dari ptr1->next ke ptr1
+                strcpy(ptr1->kode, ptr1->next->kode);
+                strcpy(ptr1->nama, ptr1->next->nama);
+                strcpy(ptr1->kategori, ptr1->next->kategori);
+                ptr1->stok = ptr1->next->stok;
+                ptr1->harga = ptr1->next->harga;
+                strcpy(ptr1->expired, ptr1->next->expired);
+
+                // Copy dari temp ke ptr1->next
+                strcpy(ptr1->next->kode, tempKode);
+                strcpy(ptr1->next->nama, tempNama);
+                strcpy(ptr1->next->kategori, tempKategori);
+                ptr1->next->stok = tempStok;
+                ptr1->next->harga = tempHarga;
+                strcpy(ptr1->next->expired, tempExpired);
+
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1; // Optimasi bubble sort, bagian akhir udah pasti urut
+    } while (swapped);
+
+    printf("\nData berhasil diurutkan!\n");
+    simpanKeFile();
+    tampilkanData();
 }
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON C <<<<<<<<<<<<<<<<<< */
-
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON D  <<<<<<<<<<<<<<<<<<
