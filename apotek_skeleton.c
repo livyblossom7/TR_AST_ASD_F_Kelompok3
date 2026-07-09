@@ -240,7 +240,6 @@ void tampilkanData() {
 
 /* ---------------------- UPDATE ---------------------- */
 void updateData() {
-    /void updateData() {
     char kode[10];
     Obat *node;
  
@@ -286,23 +285,23 @@ void updateData() {
     printf("\nData berhasil diupdate!\n");
     tekanEnter();
 }
-
+ 
 /* ---------------------- DELETE ---------------------- */
 void hapusData() {
     char kode[10];
     Obat *curr, *prev;
- 
+
     printf("\n=== HAPUS DATA OBAT ===\n");
- 
+
     if (head == NULL) {
         printf("Data masih kosong!\n");
         tekanEnter();
         return;
     }
- 
+
     printf("Masukkan kode obat yang mau dihapus: ");
     scanf("%s", kode);
- 
+
     /* cari node yang kodenya cocok, sambil simpan pointer node sebelumnya */
     curr = head;
     prev = NULL;
@@ -310,35 +309,28 @@ void hapusData() {
         prev = curr;
         curr = curr->next;
     }
- 
+
     if (curr == NULL) {
         printf("Data dengan kode %s tidak ditemukan!\n", kode);
         tekanEnter();
         return;
     }
- 
-    if (head == tail) {
-        /* cuma ada 1 data, dan itu yang dihapus */
-        head = NULL;
-        tail = NULL;
-    } else if (curr == head) {
-        /* yang dihapus adalah head, tapi masih ada data lain */
+
+    if (curr == head) {
+        /* yang dihapus adalah head (termasuk kalau cuma 1 data) */
         head = head->next;
-    } else if (curr == tail) {
-        /* yang dihapus adalah tail */
-        prev->next = NULL;
-        tail = prev;
     } else {
-        /* yang dihapus ada di tengah */
+        /* yang dihapus di tengah atau di akhir */
         prev->next = curr->next;
     }
- 
+
     free(curr);
- 
+
     simpanKeFile();
     printf("\nData dengan kode %s berhasil dihapus!\n", kode);
     tekanEnter();
 }
+
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON C  <<<<<<<<<<<<<<<<<<
