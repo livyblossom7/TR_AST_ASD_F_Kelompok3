@@ -12,75 +12,18 @@ typedef struct Obat {
     char kategori[30];
     int stok;
     long harga;
-    char expired[15];   /* format: dd-mm-yyyy */
+    char expired[15];
     struct Obat *next;
 } Obat;
 
 Obat *head = NULL;
 
 /* ---------------------- PROTOTYPE FUNGSI ---------------------- */
-void tambahData();
-void tampilkanData();
-void updateData();
-void hapusData();
-void searchData();
-void sortData();
-void rataRataHarga();
 void simpanKeFile();
-void muatDariFile();
-void bersihkanLayar();
-void tekanEnter();
-Obat* cariNodeByKode(char kode[]);
-void bebaskanMemori();
-
-/* ---------------------- FUNGSI UTAMA (MAIN) ---------------------- */
-int main() {
-    int pilihan;
-
-    muatDariFile();
-
-    do {
-        bersihkanLayar();
-        printf("========================================\n");
-        printf("               DATA APOTEK\n");
-        printf("========================================\n");
-        printf("1. Tambah Data\n");
-        printf("2. Tampilkan Semua Data\n");
-        printf("3. Update Data\n");
-        printf("4. Hapus Data\n");
-        printf("5. Search Data\n");
-        printf("6. Sort Data\n");
-        printf("7. Rata-rata Harga Obat\n");
-        printf("8. Keluar\n");
-        printf("========================================\n");
-        printf("Pilihan: ");
-        scanf("%d", &pilihan);
-        getchar(); /* buang newline sisa scanf */
-
-        switch (pilihan) {
-            case 1: tambahData(); break;
-            case 2: tampilkanData(); break;
-            case 3: updateData(); break;
-            case 4: hapusData(); break;
-            case 5: searchData(); break;
-            case 6: sortData(); break;
-            case 7: rataRataHarga(); break;
-            case 8:
-                printf("\nTerima kasih telah menggunakan program Data Apotek!\n");
-                break;
-            default:
-                printf("\nPilihan tidak valid!\n");
-                tekanEnter();
-        }
-    } while (pilihan != 8);
-
-    bebaskanMemori();
-    return 0;
-}
 
 /* ---------------------- UTILITAS ---------------------- */
 void bersihkanLayar() {
-   system("cls");
+    system("cls");
 }
 
 void tekanEnter() {
@@ -88,7 +31,6 @@ void tekanEnter() {
     getchar();
 }
 
-/* Mencari node berdasarkan kode obat, mengembalikan pointer node atau NULL */
 Obat* cariNodeByKode(char kode[]) {
     Obat *temp = head;
     while (temp != NULL) {
@@ -102,9 +44,6 @@ Obat* cariNodeByKode(char kode[]) {
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON A  <<<<<<<<<<<<<<<<<<
-   Tugas: fungsi tambahData() (bisa pilih sisip di awal/tengah/akhir)
-   dan tampilkanData()
-   Paste/tulis kode kalian DI DALAM kotak ini saja.
    ================================================================ */
 void tambahData() {
     char kode[10];
@@ -229,33 +168,31 @@ void tampilkanData() {
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON B  <<<<<<<<<<<<<<<<<<
-   Tugas: fungsi updateData() dan hapusData()
-   Paste/tulis kode kalian DI DALAM kotak ini saja.
    ================================================================ */
 
 /* ---------------------- UPDATE ---------------------- */
 void updateData() {
     char kode[10];
     Obat *node;
- 
+
     printf("\n=== UPDATE DATA OBAT ===\n");
- 
+
     if (head == NULL) {
         printf("Data masih kosong!\n");
         tekanEnter();
         return;
     }
- 
+
     printf("Masukkan kode obat yang mau diupdate: ");
-    scanf("%s", kode);
- 
+    scanf("%9s", kode);
+
     node = cariNodeByKode(kode);
     if (node == NULL) {
         printf("Data dengan kode %s tidak ditemukan!\n", kode);
         tekanEnter();
         return;
     }
- 
+
     printf("\nData lama:\n");
     printf("Kode     : %s\n", node->kode);
     printf("Nama     : %s\n", node->nama);
@@ -263,24 +200,24 @@ void updateData() {
     printf("Stok     : %d\n", node->stok);
     printf("Harga    : %ld\n", node->harga);
     printf("Expired  : %s\n", node->expired);
- 
+
     printf("\nMasukkan data baru (kode tidak bisa diubah):\n");
     printf("Nama baru               : ");
-    scanf("%s", node->nama);
+    scanf(" %49[^\n]", node->nama);
     printf("Kategori baru           : ");
-    scanf("%s", node->kategori);
+    scanf(" %29[^\n]", node->kategori);
     printf("Stok baru               : ");
     scanf("%d", &node->stok);
     printf("Harga baru              : ");
     scanf("%ld", &node->harga);
     printf("Expired baru (dd-mm-yyyy): ");
-    scanf("%s", node->expired);
- 
+    scanf(" %14s", node->expired);
+
     simpanKeFile();
     printf("\nData berhasil diupdate!\n");
     tekanEnter();
 }
- 
+
 /* ---------------------- DELETE ---------------------- */
 void hapusData() {
     char kode[10];
@@ -295,9 +232,8 @@ void hapusData() {
     }
 
     printf("Masukkan kode obat yang mau dihapus: ");
-    scanf("%s", kode);
+    scanf("%9s", kode);
 
-    /* cari node yang kodenya cocok, sambil simpan pointer node sebelumnya */
     curr = head;
     prev = NULL;
     while (curr != NULL && strcmp(curr->kode, kode) != 0) {
@@ -312,10 +248,8 @@ void hapusData() {
     }
 
     if (curr == head) {
-        /* yang dihapus adalah head (termasuk kalau cuma 1 data) */
         head = head->next;
     } else {
-        /* yang dihapus di tengah atau di akhir */
         prev->next = curr->next;
     }
 
@@ -326,16 +260,11 @@ void hapusData() {
     tekanEnter();
 }
 
-
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON C  <<<<<<<<<<<<<<<<<<
-   Tugas: fungsi searchData() (kode/nama/kategori, case-sensitive)
-   dan sortData() (ascending saja: nama/harga/stok)
-   Paste/tulis kode kalian DI DALAM kotak ini saja.
    ================================================================ */
 
 /* ---------------------- SEARCH ---------------------- */
-
 void searchData() {
     if (head == NULL) {
         printf("\nData masih kosong!\n");
@@ -371,7 +300,7 @@ void searchData() {
     if (pilihan == 1) {
         Obat *hasil = cariNodeByKode(keyword);
         if (hasil != NULL) {
-            printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n", 
+            printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n",
                    hasil->kode, hasil->nama, hasil->kategori, hasil->stok, hasil->harga, hasil->expired);
             ketemu = 1;
         }
@@ -380,8 +309,8 @@ void searchData() {
         while (temp != NULL) {
             if ((pilihan == 2 && strstr(temp->nama, keyword) != NULL) ||
                 (pilihan == 3 && strstr(temp->kategori, keyword) != NULL)) {
-                
-                printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n", 
+
+                printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n",
                        temp->kode, temp->nama, temp->kategori, temp->stok, temp->harga, temp->expired);
                 ketemu = 1;
             }
@@ -392,7 +321,7 @@ void searchData() {
     if (ketemu == 0) {
         printf("Data tidak ditemukan!\n");
     }
-    
+
     printf("\n");
     tekanEnter();
 }
@@ -441,12 +370,10 @@ void sortData() {
             }
 
             if (tukar == 1) {
-                // Tukar isi datanya, jangan pointernya (sesuai instruksi)
                 char tempKode[10], tempNama[50], tempKategori[30], tempExpired[15];
                 int tempStok;
                 long tempHarga;
 
-                // Copy dari ptr1 ke temp
                 strcpy(tempKode, ptr1->kode);
                 strcpy(tempNama, ptr1->nama);
                 strcpy(tempKategori, ptr1->kategori);
@@ -454,7 +381,6 @@ void sortData() {
                 tempHarga = ptr1->harga;
                 strcpy(tempExpired, ptr1->expired);
 
-                // Copy dari ptr1->next ke ptr1
                 strcpy(ptr1->kode, ptr1->next->kode);
                 strcpy(ptr1->nama, ptr1->next->nama);
                 strcpy(ptr1->kategori, ptr1->next->kategori);
@@ -462,7 +388,6 @@ void sortData() {
                 ptr1->harga = ptr1->next->harga;
                 strcpy(ptr1->expired, ptr1->next->expired);
 
-                // Copy dari temp ke ptr1->next
                 strcpy(ptr1->next->kode, tempKode);
                 strcpy(ptr1->next->nama, tempNama);
                 strcpy(ptr1->next->kategori, tempKategori);
@@ -474,7 +399,7 @@ void sortData() {
             }
             ptr1 = ptr1->next;
         }
-        lptr = ptr1; // Optimasi bubble sort, bagian akhir udah pasti urut
+        lptr = ptr1;
     } while (swapped);
 
     printf("\nData berhasil diurutkan!\n");
@@ -484,8 +409,6 @@ void sortData() {
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON D  <<<<<<<<<<<<<<<<<<
-   Tugas: fungsi rataRataHarga(), simpanKeFile(), muatDariFile()
-   Paste/tulis kode kalian DI DALAM kotak ini saja.
    ================================================================ */
 
 /* ---------------------- RATA-RATA HARGA ---------------------- */
@@ -548,7 +471,6 @@ void simpanKeFile() {
     fclose(file);
 }
 
-
 void muatDariFile() {
     FILE *file = fopen(FILENAME, "r");
 
@@ -557,7 +479,7 @@ void muatDariFile() {
     }
 
     char baris[200];
-    Obat *last = NULL;   /* pointer lokal ke node terakhir yang sudah disambung */
+    Obat *last = NULL;
 
     while (fgets(baris, sizeof(baris), file) != NULL) {
 
@@ -593,4 +515,59 @@ void muatDariFile() {
     }
 
     fclose(file);
+}
+
+/* ---------------------- BEBASKAN MEMORI (fungsi bersama) ---------------------- */
+void bebaskanMemori() {
+    Obat *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+/* ---------------------- FUNGSI UTAMA (MAIN) ---------------------- */
+int main() {
+    int pilihan;
+
+    muatDariFile();
+
+    do {
+        bersihkanLayar();
+        printf("========================================\n");
+        printf("               DATA APOTEK\n");
+        printf("========================================\n");
+        printf("1. Tambah Data\n");
+        printf("2. Tampilkan Semua Data\n");
+        printf("3. Update Data\n");
+        printf("4. Hapus Data\n");
+        printf("5. Search Data\n");
+        printf("6. Sort Data\n");
+        printf("7. Rata-rata Harga Obat\n");
+        printf("8. Keluar\n");
+        printf("========================================\n");
+        printf("Pilihan: ");
+        scanf("%d", &pilihan);
+        getchar();
+
+        switch (pilihan) {
+            case 1: tambahData(); break;
+            case 2: tampilkanData(); break;
+            case 3: updateData(); break;
+            case 4: hapusData(); break;
+            case 5: searchData(); break;
+            case 6: sortData(); break;
+            case 7: rataRataHarga(); break;
+            case 8:
+                printf("\nTerima kasih telah menggunakan program Data Apotek!\n");
+                break;
+            default:
+                printf("\nPilihan tidak valid!\n");
+                tekanEnter();
+        }
+    } while (pilihan != 8);
+
+    bebaskanMemori();
+    return 0;
 }
