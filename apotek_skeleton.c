@@ -350,58 +350,151 @@ void hapusData() {
    ================================================================ */
 
 /* ---------------------- SEARCH ---------------------- */
+
 void searchData() {
-    /* ============================================================
-       TODO Person C — isi fungsi ini!
+    if (head == NULL) {
+        printf("\nData masih kosong!\n");
+        tekanEnter();
+        return;
+    }
 
-       Yang perlu dilakukan:
-       1. Tampilkan menu pilihan: 1. Cari berdasarkan Kode
-                                    2. Cari berdasarkan Nama
-                                    3. Cari berdasarkan Kategori
-       2. Kalau head == NULL, kasih pesan "Data masih kosong!", return
-       3. Untuk pilihan Kode -> pakai cariNodeByKode(kode)
-       4. Untuk pilihan Nama / Kategori -> loop semua node, cek
-          pakai strstr(temp->nama, kata) atau strstr(temp->kategori, kategori)
-          supaya bisa cari sebagian kata (substring), bukan cuma exact match
-       5. PENTING: pencarian ini case-sensitive (jangan pakai tolower()).
-          Sebelum user input nama/kategori, tampilkan dulu keterangan
-          singkat bahwa "Adi" dan "adi" akan dianggap berbeda karena
-          nilai ASCII huruf besar & kecil berbeda
-       6. Kalau data ditemukan, tampilkan detailnya. Kalau tidak ada
-          satupun yang cocok, tampilkan "Data tidak ditemukan!"
-       7. Panggil tekanEnter() di akhir
-       ============================================================ */
+    int pilihan;
+    char keyword[50];
+    int ketemu = 0;
 
-    printf("\n[searchData belum diimplementasikan]\n");
+    printf("\n=== SEARCH DATA OBAT ===\n");
+    printf("1. Cari berdasarkan Kode\n");
+    printf("2. Cari berdasarkan Nama\n");
+    printf("3. Cari berdasarkan Kategori\n");
+    printf("Pilihan: ");
+    scanf("%d", &pilihan);
+    getchar();
+
+    if (pilihan < 1 || pilihan > 3) {
+        printf("\nPilihan tidak valid!\n");
+        tekanEnter();
+        return;
+    }
+
+    printf("\n(Catatan: Pencarian ini case-sensitive ya. 'Obat' beda dengan 'obat')\n");
+    printf("Masukkan kata kunci: ");
+    scanf(" %49[^\n]", keyword);
+    getchar();
+
+    printf("\n=== HASIL PENCARIAN ===\n");
+
+    if (pilihan == 1) {
+        Obat *hasil = cariNodeByKode(keyword);
+        if (hasil != NULL) {
+            printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n", 
+                   hasil->kode, hasil->nama, hasil->kategori, hasil->stok, hasil->harga, hasil->expired);
+            ketemu = 1;
+        }
+    } else {
+        Obat *temp = head;
+        while (temp != NULL) {
+            if ((pilihan == 2 && strstr(temp->nama, keyword) != NULL) ||
+                (pilihan == 3 && strstr(temp->kategori, keyword) != NULL)) {
+                
+                printf("- Kode: %s | Nama: %s | Kategori: %s | Stok: %d | Harga: %ld | Exp: %s\n", 
+                       temp->kode, temp->nama, temp->kategori, temp->stok, temp->harga, temp->expired);
+                ketemu = 1;
+            }
+            temp = temp->next;
+        }
+    }
+
+    if (ketemu == 0) {
+        printf("Data tidak ditemukan!\n");
+    }
+    
+    printf("\n");
     tekanEnter();
 }
 
 /* ---------------------- SORT ---------------------- */
 void sortData() {
-    /* ============================================================
-       TODO Person C — isi fungsi ini!
+    if (head == NULL || head->next == NULL) {
+        printf("\nData tidak cukup untuk diurutkan (minimal butuh 2 data).\n");
+        tekanEnter();
+        return;
+    }
 
-       Yang perlu dilakukan:
-       1. Kalau data kurang dari 2 (head == NULL || head->next == NULL),
-          kasih pesan "Data tidak cukup untuk diurutkan", return
-       2. Tampilkan menu pilihan urutkan berdasarkan: 1. Nama
-                                                        2. Harga
-                                                        3. Stok
-          (HANYA ascending / kecil ke besar, tidak perlu tanya
-          ascending/descending lagi)
-       3. Implementasikan bubble sort di linked list. Karena ini
-          singly linked list, cara paling gampang: TUKAR ISI DATA
-          antar 2 node yang berdekatan (bukan tukar pointer/alamat),
-          pakai variabel temp buat nampung sementara pas nukar
-       4. Bandingkan pakai strcmp() untuk nama (kalau hasilnya > 0
-          berarti perlu ditukar), atau operator > biasa untuk
-          harga/stok (angka)
-       5. Setelah selesai sorting, panggil simpanKeFile() dan
-          tampilkanData() supaya user langsung lihat hasilnya
-       ============================================================ */
+    int pilihan;
+    printf("\n=== SORT DATA OBAT ===\n");
+    printf("Urutkan (Ascending) berdasarkan:\n");
+    printf("1. Nama\n");
+    printf("2. Harga\n");
+    printf("3. Stok\n");
+    printf("Pilihan: ");
+    scanf("%d", &pilihan);
+    getchar();
 
-    printf("\n[sortData belum diimplementasikan]\n");
-    tekanEnter();
+    if (pilihan < 1 || pilihan > 3) {
+        printf("\nPilihan tidak valid!\n");
+        tekanEnter();
+        return;
+    }
+
+    int swapped;
+    Obat *ptr1;
+    Obat *lptr = NULL;
+
+    do {
+        swapped = 0;
+        ptr1 = head;
+
+        while (ptr1->next != lptr) {
+            int tukar = 0;
+
+            if (pilihan == 1) {
+                if (strcmp(ptr1->nama, ptr1->next->nama) > 0) tukar = 1;
+            } else if (pilihan == 2) {
+                if (ptr1->harga > ptr1->next->harga) tukar = 1;
+            } else if (pilihan == 3) {
+                if (ptr1->stok > ptr1->next->stok) tukar = 1;
+            }
+
+            if (tukar == 1) {
+                // Tukar isi datanya, jangan pointernya (sesuai instruksi)
+                char tempKode[10], tempNama[50], tempKategori[30], tempExpired[15];
+                int tempStok;
+                long tempHarga;
+
+                // Copy dari ptr1 ke temp
+                strcpy(tempKode, ptr1->kode);
+                strcpy(tempNama, ptr1->nama);
+                strcpy(tempKategori, ptr1->kategori);
+                tempStok = ptr1->stok;
+                tempHarga = ptr1->harga;
+                strcpy(tempExpired, ptr1->expired);
+
+                // Copy dari ptr1->next ke ptr1
+                strcpy(ptr1->kode, ptr1->next->kode);
+                strcpy(ptr1->nama, ptr1->next->nama);
+                strcpy(ptr1->kategori, ptr1->next->kategori);
+                ptr1->stok = ptr1->next->stok;
+                ptr1->harga = ptr1->next->harga;
+                strcpy(ptr1->expired, ptr1->next->expired);
+
+                // Copy dari temp ke ptr1->next
+                strcpy(ptr1->next->kode, tempKode);
+                strcpy(ptr1->next->nama, tempNama);
+                strcpy(ptr1->next->kategori, tempKategori);
+                ptr1->next->stok = tempStok;
+                ptr1->next->harga = tempHarga;
+                strcpy(ptr1->next->expired, tempExpired);
+
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1; // Optimasi bubble sort, bagian akhir udah pasti urut
+    } while (swapped);
+
+    printf("\nData berhasil diurutkan!\n");
+    simpanKeFile();
+    tampilkanData();
 }
 
 /* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON C <<<<<<<<<<<<<<<<<< */
