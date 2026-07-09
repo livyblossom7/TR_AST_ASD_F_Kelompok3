@@ -281,12 +281,6 @@ void tampilkanData() {
     tekanEnter();
 }
 
-
-
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON A <<<<<<<<<<<<<<<<<< */
-
-
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON B  <<<<<<<<<<<<<<<<<<
    Tugas: fungsi updateData() dan hapusData()
@@ -295,52 +289,105 @@ void tampilkanData() {
 
 /* ---------------------- UPDATE ---------------------- */
 void updateData() {
-    /* ============================================================
-       TODO Person B — isi fungsi ini!
-
-       Yang perlu dilakukan:
-       1. Minta input kode obat yang mau diupdate
-       2. Cari node-nya pakai cariNodeByKode(kode)
-       3. Kalau NULL (tidak ketemu), kasih pesan error, tekanEnter(),
-          lalu return
-       4. Kalau ketemu, tampilkan data lama-nya sebagai referensi
-       5. Minta input data baru (nama, kategori, stok, harga, expired)
-          dan langsung timpa/overwrite field di node yang ditemukan
-       6. Panggil simpanKeFile() supaya perubahan tersimpan ke file
-       7. Panggil tekanEnter() di akhir
-       ============================================================ */
-
-    printf("\n[updateData belum diimplementasikan]\n");
+    /void updateData() {
+    char kode[10];
+    Obat *node;
+ 
+    printf("\n=== UPDATE DATA OBAT ===\n");
+ 
+    if (head == NULL) {
+        printf("Data masih kosong!\n");
+        tekanEnter();
+        return;
+    }
+ 
+    printf("Masukkan kode obat yang mau diupdate: ");
+    scanf("%s", kode);
+ 
+    node = cariNodeByKode(kode);
+    if (node == NULL) {
+        printf("Data dengan kode %s tidak ditemukan!\n", kode);
+        tekanEnter();
+        return;
+    }
+ 
+    printf("\nData lama:\n");
+    printf("Kode     : %s\n", node->kode);
+    printf("Nama     : %s\n", node->nama);
+    printf("Kategori : %s\n", node->kategori);
+    printf("Stok     : %d\n", node->stok);
+    printf("Harga    : %ld\n", node->harga);
+    printf("Expired  : %s\n", node->expired);
+ 
+    printf("\nMasukkan data baru (kode tidak bisa diubah):\n");
+    printf("Nama baru               : ");
+    scanf("%s", node->nama);
+    printf("Kategori baru           : ");
+    scanf("%s", node->kategori);
+    printf("Stok baru               : ");
+    scanf("%d", &node->stok);
+    printf("Harga baru              : ");
+    scanf("%ld", &node->harga);
+    printf("Expired baru (dd-mm-yyyy): ");
+    scanf("%s", node->expired);
+ 
+    simpanKeFile();
+    printf("\nData berhasil diupdate!\n");
     tekanEnter();
 }
 
 /* ---------------------- DELETE ---------------------- */
 void hapusData() {
-    /* ============================================================
-       TODO Person B — isi fungsi ini!
-
-       Yang perlu dilakukan:
-       1. Minta input kode obat yang mau dihapus
-       2. Kalau head == NULL, kasih pesan "Data masih kosong!", return
-       3. Cari node yang kode-nya cocok, sambil simpan juga pointer
-          ke node SEBELUMNYA (butuh 2 variabel pointer: current & prev)
-          karena buat hapus node di singly linked list, node sebelumnya
-          harus disambungkan ke node SETELAH yang dihapus
-       4. Kalau tidak ketemu, kasih pesan error, return
-       5. Kalau node yang dihapus adalah head, geser head ke
-          node->next. Kalau bukan head, sambungkan prev->next ke
-          node->next
-       6. free() node yang sudah dihapus
-       7. Panggil simpanKeFile() supaya perubahan tersimpan
-       8. Panggil tekanEnter() di akhir
-       ============================================================ */
-
-    printf("\n[hapusData belum diimplementasikan]\n");
+    char kode[10];
+    Obat *curr, *prev;
+ 
+    printf("\n=== HAPUS DATA OBAT ===\n");
+ 
+    if (head == NULL) {
+        printf("Data masih kosong!\n");
+        tekanEnter();
+        return;
+    }
+ 
+    printf("Masukkan kode obat yang mau dihapus: ");
+    scanf("%s", kode);
+ 
+    /* cari node yang kodenya cocok, sambil simpan pointer node sebelumnya */
+    curr = head;
+    prev = NULL;
+    while (curr != NULL && strcmp(curr->kode, kode) != 0) {
+        prev = curr;
+        curr = curr->next;
+    }
+ 
+    if (curr == NULL) {
+        printf("Data dengan kode %s tidak ditemukan!\n", kode);
+        tekanEnter();
+        return;
+    }
+ 
+    if (head == tail) {
+        /* cuma ada 1 data, dan itu yang dihapus */
+        head = NULL;
+        tail = NULL;
+    } else if (curr == head) {
+        /* yang dihapus adalah head, tapi masih ada data lain */
+        head = head->next;
+    } else if (curr == tail) {
+        /* yang dihapus adalah tail */
+        prev->next = NULL;
+        tail = prev;
+    } else {
+        /* yang dihapus ada di tengah */
+        prev->next = curr->next;
+    }
+ 
+    free(curr);
+ 
+    simpanKeFile();
+    printf("\nData dengan kode %s berhasil dihapus!\n", kode);
     tekanEnter();
 }
-
-/* >>>>>>>>>>>>>>>>>> AKHIR BAGIAN PERSON B <<<<<<<<<<<<<<<<<< */
-
 
 /* ================================================================
    >>>>>>>>>>>>>>>>>>  BAGIAN PERSON C  <<<<<<<<<<<<<<<<<<
