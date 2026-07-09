@@ -562,6 +562,7 @@ void muatDariFile() {
     }
 
     char baris[200];
+    Obat *last = NULL;   /* pointer lokal ke node terakhir yang sudah disambung */
 
     while (fgets(baris, sizeof(baris), file) != NULL) {
 
@@ -590,11 +591,10 @@ void muatDariFile() {
 
         if (head == NULL) {
             head = temp;
-            tail = temp;
         } else {
-            tail->next = temp;
-            tail = temp;
+            last->next = temp;
         }
+        last = temp;
     }
 
     fclose(file);
