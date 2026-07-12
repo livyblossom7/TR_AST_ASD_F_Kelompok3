@@ -1,1 +1,24 @@
-o|antisioksida|pembunuhan|100|10000000|21
+OA001|Sangobion|Pil Tambah Darah|100|10000|11-07-2026
+OA002|Otopain 8 ml|Obat Tetes Telinga|50|20000|20-03-2027
+OB001|Paracetamol 500mg|Analgesik|150|5000|20-12-2026
+OB002|Amoxicillin 500mg|Antibiotik|80|12000|15-08-2026
+OB003|Vitamin C 1000mg|Vitamin|200|15000|10-03-2027
+OB004|Antasida Tablet|Obat Lambung|60|8000|05-07-2026
+OB005|Ibuprofen 400mg|Analgesik|100|10000|30-11-2026
+OB006|Obat Batuk Hitam|Obat Batuk|45|7500|22-09-2026
+OB007|Cetirizine 10mg|Antihistamin|90|9000|18-01-2027
+OB008|Salbutamol Inhaler|Obat Asma|25|45000|12-06-2026
+OB009|Omeprazole 20mg|Obat Lambung|70|13500|28-02-2027
+OB010|Metformin 500mg|Antidiabetes|55|11000|09-10-2026
+OB011|Simvastatin 10mg|Kolesterol|40|17500|14-04-2027
+OB012|Betadine 60ml|Antiseptik|30|22000|25-05-2026
+OB013|Vitamin B Complex|Vitamin|120|9500|19-12-2026
+OB014|Diazepam 5mg|Obat Saraf|15|20000|03-08-2026
+OB015|Ranitidine 150mg|Obat Lambung|65|8500|11-07-2026
+OB016|Insulin Novorapid|Antidiabetes|10|150000|30-08-2026
+OB017|Loratadine 10mg|Antihistamin|85|9800|21-01-2027
+OB018|Captopril 25mg|Obat Hipertensi|75|8800|16-11-2026
+OB019|Salep Gentamicin|Antibiotik|50|18000|02-06-2026
+OB020|Oralit Sachet|Elektrolit|300|2000|29-03-2027
+OB021|Tolak Angin 15 ml|Obat Herbal|80|2500|01-01-2027
+OB022|Hansaplast|Obat Luka Ringan|100|13000|03-04-2029
